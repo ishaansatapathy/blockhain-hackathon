@@ -4,36 +4,75 @@
     <meta charset="utf-8" />
     <title>TrustVault SafePay</title>
     <style>
+      * {
+        box-sizing: border-box;
+      }
       body {
         margin: 0;
-        font-family: 'Inter', sans-serif;
-        min-width: 220px;
+        font-family: 'Segoe UI', 'Inter', sans-serif;
+        min-width: 320px;
+        max-width: 420px;
         padding: 16px;
-        background: #faf7f0;
+        background: linear-gradient(135deg, #faf7f0 0%, #f5f0ea 100%);
         color: #1f2937;
       }
       h1 {
-        font-size: 16px;
-        margin: 0 0 12px;
+        font-size: 18px;
+        margin: 0 0 8px;
         display: flex;
         align-items: center;
         gap: 8px;
+        font-weight: 700;
       }
-      button {
-        background: linear-gradient(135deg, #ff9933, #e85d04);
-        border: none;
-        color: #fff;
-        padding: 8px 14px;
-        border-radius: 999px;
-        cursor: pointer;
-        font-weight: 600;
-        display: inline-flex;
+      .section {
+        margin: 16px 0;
+        padding: 12px;
+        background: #fff;
+        border-radius: 8px;
+        border-left: 4px solid #ff9933;
+      }
+      .section.safe {
+        border-left-color: #138808;
+      }
+      .section.warning {
+        border-left-color: #f59e0b;
+      }
+      .section.danger {
+        border-left-color: #dc2626;
+      }
+      .score-display {
+        display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 12px;
+        margin: 12px 0;
       }
-      button.secondary {
-        background: #e5e7eb;
-        color: #111827;
+      .score-circle {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 24px;
+        color: #fff;
+        background: linear-gradient(135deg, #ff9933, #e85d04);
+      }
+      .score-circle.safe {
+        background: linear-gradient(135deg, #138808, #1b9c57);
+      }
+      .score-circle.warning {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+      }
+      .score-info h3 {
+        margin: 0;
+        font-size: 14px;
+        color: #1f2937;
+      }
+      .score-info p {
+        margin: 4px 0 0;
+        font-size: 12px;
+        color: #6b7280;
       }
       .status-pill {
         display: inline-flex;
@@ -42,32 +81,123 @@
         font-size: 12px;
         background: #e3fcef;
         color: #047857;
-        padding: 4px 10px;
+        padding: 6px 12px;
         border-radius: 999px;
-        margin-bottom: 12px;
+        margin: 8px 0;
+        font-weight: 600;
       }
       .status-pill.disabled {
         background: #fee2e2;
         color: #b91c1c;
       }
-      ul {
-        margin: 12px 0 0;
-        padding-left: 18px;
+      .status-pill.warning {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .button-group {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      button {
+        flex: 1;
+        min-width: 120px;
+        background: linear-gradient(135deg, #ff9933, #e85d04);
+        border: none;
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+      }
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 153, 51, 0.3);
+      }
+      button.secondary {
+        background: #e5e7eb;
+        color: #111827;
+      }
+      button.secondary:hover {
+        background: #d1d5db;
+      }
+      .details {
         font-size: 12px;
         color: #4b5563;
+        margin: 8px 0;
+        line-height: 1.5;
+      }
+      .details strong {
+        color: #1f2937;
+      }
+      .risk-factors {
+        margin: 8px 0;
+        font-size: 12px;
+      }
+      .risk-item {
+        padding: 4px 0;
+        color: #dc2626;
+      }
+      .risk-item.safe {
+        color: #138808;
+      }
+      ul {
+        margin: 8px 0 0;
+        padding-left: 18px;
+        font-size: 12px;
+        color: #6b7280;
+      }
+      .divider {
+        height: 1px;
+        background: #e5e7eb;
+        margin: 12px 0;
       }
     </style>
   </head>
   <body>
     <h1>🛡️ TrustVault SafePay</h1>
-    <div id="status" class="status-pill">Enabled</div>
-    <button id="toggle">Disable protection</button>
-    <button id="scan" class="secondary">Scan current tab</button>
+    
+    <div class="section" id="statusSection">
+      <div id="status" class="status-pill">Checking...</div>
+    </div>
+
+    <div class="section" id="scoreSection" style="display: none;">
+      <div class="score-display">
+        <div class="score-circle" id="scoreCircle">--</div>
+        <div class="score-info">
+          <h3 id="scoreTitle">Safety Score</h3>
+          <p id="scoreDescription">Analyzing page...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="detailsSection" style="display: none;">
+      <strong>Site Analysis:</strong>
+      <div class="details" id="siteDetails"></div>
+      <div class="risk-factors" id="riskFactors"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="button-group">
+      <button id="toggle">Disable protection</button>
+      <button id="scan" class="secondary">Scan Now</button>
+    </div>
+
     <ul>
-      <li>Alerts you when suspicious payment/login pages are opened.</li>
-      <li>Blocks unsafe checkout buttons by default.</li>
-      <li>Use "Scan current tab" to re-run checks manually.</li>
+      <li><strong>Real-time scanning:</strong> Checks each page automatically</li>
+      <li><strong>Smart blocking:</strong> Prevents dangerous transactions</li>
+      <li><strong>Safety score:</strong> See detailed analysis above</li>
+      <li><strong>One-click scanning:</strong> Use "Scan Now" to re-check</li>
     </ul>
+
+    <script src="config.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>

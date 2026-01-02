@@ -1,19 +1,29 @@
 {
   "manifest_version": 3,
   "name": "TrustVault SafePay",
-  "description": "Warns you when you open suspicious payment or login pages and blocks fake checkout buttons.",
-  "version": "1.0.0",
-  "action": {
-    "default_title": "TrustVault SafePay",
-    "default_popup": "popup.html"
+  "description": "Real-time protection against phishing, fraud, and suspicious payment pages. Analyzes websites and blocks dangerous transactions.",
+  "version": "1.0.1",
+  "icons": {
+    "16": "images/icon-16.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png"
   },
-  "permissions": ["storage"],
+  "action": {
+    "default_title": "TrustVault SafePay - Click to check this page",
+    "default_popup": "popup.html",
+    "default_icon": "images/icon-48.png"
+  },
+  "permissions": ["storage", "scripting"],
   "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "run_at": "document_idle"
+      "js": ["config.js", "content.js"],
+      "run_at": "document_start",
+      "all_frames": false
     }
   ]
 }
