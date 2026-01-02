@@ -9,6 +9,37 @@ let extensionEnabled = true;
 let currentVerdict = 'secure';
 let currentAnalysis = null;
 
+// Analysis cache for performance optimization
+const analysisCache = new Map();
+const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+
+/**
+ * Get cached analysis result if available and fresh
+ */
+const getCachedAnalysis = (host) => {
+  const cached = analysisCache.get(host);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    return cached.analysis;
+  }
+  analysisCache.delete(host);
+  return null;
+};
+
+/**
+ * Store analysis result in cache
+ */
+const setCachedAnalysis = (host, analysis) => {
+  analysisCache.set(host, {
+    analysis,
+    timestamp: Date.now()
+  });
+  // Limit cache size to 100 entries
+  if (analysisCache.size > 100) {
+    const firstKey = analysisCache.keys().next().value;
+    analysisCache.delete(firstKey);
+  }
+};
+
 /**
  * Create and style the warning banner
  */
@@ -133,20 +164,29 @@ const hideBanner = () => {
  */
 const analyseLocation = () => {
   const url = window.location;
-  let score = 100;  // Start with perfect score
   const host = url.hostname.toLowerCase();
+  
+  // Check cache first for performance
+  const cached = getCachedAnalysis(host);
+  if (cached) {
+    return cached;
+  }
+
+  let score = 100;  // Start with perfect score
   const path = url.pathname.toLowerCase();
   const riskItems = [];
 
   // Check if whitelisted
   if (isWhitelistedDomain(host)) {
-    return { 
+    const result = { 
       verdict: 'secure', 
       score: 100, 
       domain: host,
       riskItems: [],
       suspicious: false 
     };
+    setCachedAnalysis(host, result);
+    return result;
   }
 
   // 1. HTTPS Check (30 points)
@@ -215,13 +255,17 @@ const analyseLocation = () => {
   if (score < CONFIG.SCORE_THRESHOLDS.WARNING) verdict = 'unsafe';
   else if (score < CONFIG.SCORE_THRESHOLDS.SAFE) verdict = 'warning';
 
-  return { 
+  const result = { 
     verdict, 
     score, 
     domain: host,
     riskItems,
     suspicious: verdict !== 'secure'
   };
+  
+  // Cache the result
+  setCachedAnalysis(host, result);
+  return result;
 };
 
 const isWhitelistedDomain = (host) => {
@@ -246,8 +290,40 @@ const containsHomographAttack = (host) => {
 
 const detectPhishingPatterns = (host, path) => {
   const phishingPatterns = [
+    // Common typosquatting patterns
     /secure[\w-]*bank/i,
     /update[\w-]*account/i,
+    /verify[\w-]*payment/i,
+    /confirm[\w-]*identity/i,
+    /authorize[\w-]*access/i,
+    /validate[\w-]*card/i,
+    /urgent[\w-]*action/i,
+    /claim[\w-]*reward/i,
+    /immediate[\w-]*action/i,
+    
+    // Number substitutions (1 for i, 0 for o, 3 for e, 4 for a, 5 for s, 7 for t)
+    /\d{1,}[a-z]*\.com/i,
+    /^(g00gle|paypa1|amaz0n|micr0soft)/i,
+    
+    // Common misspellings
+    /^(gogle|paypa|amazn|micrsofts|aple|twiter)/i,
+    
+    // Dashes in place of valid domains
+    /^([a-z]+-[a-z]+-){3,}/i,
+    
+    // Suspicious patterns
+    /bit[\w-]*coin/i,
+    /crypt[\w-]*wallet/i,
+    /nft[\w-]*market/i,
+    /token[\w-]*swap/i,
+    
+    // Lookalike domains
+    /^(bitcoin|bnance|coinbase|kraken|gemini)/i
+  ];
+  
+  const fullUrl = host + path;
+  return phishingPatterns.some(pattern => pattern.test(fullUrl));
+};
     /verify[\w-]*payment/i,
     /confirm[\w-]*identity/i,
     /re[\w-]*enter[\w-]*password/i,

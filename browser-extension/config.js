@@ -8,7 +8,9 @@ const CONFIG = {
   SUSPICIOUS_KEYWORDS: [
     'login', 'verify', 'wallet', 'bank', 'secure', 'update', 'invoice',
     'auth', 'account', 'password', 'confirm', 'validate', 'authenticate',
-    'paypal', 'amazon', 'apple', 'google', 'microsoft', 'stripe'
+    'paypal', 'amazon', 'apple', 'google', 'microsoft', 'stripe',
+    'urgent', 'claim', 'reward', 'billing', 'payment', 'tax', 'refund',
+    'expire', 'expire', 'limited', 'immediate', 'required', 'alert'
   ],
 
   // High-risk top-level domains commonly used in phishing

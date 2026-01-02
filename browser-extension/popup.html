@@ -7,14 +7,28 @@
       * {
         box-sizing: border-box;
       }
+      :root {
+        --bg-primary: linear-gradient(135deg, #faf7f0 0%, #f5f0ea 100%);
+        --bg-secondary: #fff;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --border-color: #e5e7eb;
+      }
       body {
         margin: 0;
         font-family: 'Segoe UI', 'Inter', sans-serif;
         min-width: 320px;
         max-width: 420px;
         padding: 16px;
-        background: linear-gradient(135deg, #faf7f0 0%, #f5f0ea 100%);
-        color: #1f2937;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+      }
+      body.dark-mode {
+        --bg-primary: #1f2937;
+        --bg-secondary: #374151;
+        --text-primary: #f9fafb;
+        --text-secondary: #d1d5db;
+        --border-color: #4b5563;
       }
       h1 {
         font-size: 18px;
@@ -27,7 +41,7 @@
       .section {
         margin: 16px 0;
         padding: 12px;
-        background: #fff;
+        background: var(--bg-secondary);
         border-radius: 8px;
         border-left: 4px solid #ff9933;
       }
@@ -67,12 +81,12 @@
       .score-info h3 {
         margin: 0;
         font-size: 14px;
-        color: #1f2937;
+        color: var(--text-primary);
       }
       .score-info p {
         margin: 4px 0 0;
         font-size: 12px;
-        color: #6b7280;
+        color: var(--text-secondary);
       }
       .status-pill {
         display: inline-flex;
@@ -127,14 +141,21 @@
       button.secondary:hover {
         background: #d1d5db;
       }
+      body.dark-mode button.secondary {
+        background: #4b5563;
+        color: #f9fafb;
+      }
+      body.dark-mode button.secondary:hover {
+        background: #6b7280;
+      }
       .details {
         font-size: 12px;
-        color: #4b5563;
+        color: var(--text-secondary);
         margin: 8px 0;
         line-height: 1.5;
       }
       .details strong {
-        color: #1f2937;
+        color: var(--text-primary);
       }
       .risk-factors {
         margin: 8px 0;

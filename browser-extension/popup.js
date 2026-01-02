@@ -1,5 +1,6 @@
 const STORAGE_KEY = 'trustvault-safepay-enabled';
 const ANALYSIS_KEY = 'trustvault-last-analysis';
+const PREFERENCES_KEY = 'trustvault-preferences';
 
 const statusPill = document.getElementById('status');
 const toggleButton = document.getElementById('toggle');
@@ -11,6 +12,18 @@ const scoreTitle = document.getElementById('scoreTitle');
 const scoreDescription = document.getElementById('scoreDescription');
 const siteDetails = document.getElementById('siteDetails');
 const riskFactors = document.getElementById('riskFactors');
+
+/**
+ * Apply dark mode if enabled
+ */
+const applyDarkMode = () => {
+  chrome.storage.sync.get([PREFERENCES_KEY], (result) => {
+    const prefs = result[PREFERENCES_KEY] || {};
+    if (prefs.darkMode) {
+      document.body.classList.add('dark-mode');
+    }
+  });
+};
 
 const getVerdictEmoji = (verdict) => {
   const emojis = {
@@ -137,4 +150,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-readFlag();
+// Apply dark mode on load
+applyDarkMode();
+
+// Register keyboard shortcut handlers
+chrome.commands.onCommand.addListener((command) => {
+  if (command === 'check-page') {
+    scanButton.click();
+  } else if (command === 'toggle-extension') {
+    toggleButton.click();
+  } else if (command === 'show-stats') {
+    chrome.runtime.openOptionsPage();
+  }
+});
+
