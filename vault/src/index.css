@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Bharat Identity Palette – inspired by the Tricolour */
+    --background: 36 100% 98%; /* warm off-white */
+    --foreground: 214 30% 10%; /* deep slate */
+
+    --card: 0 0% 100%;
+    --card-foreground: 214 30% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 214 30% 10%;
+
+    /* Primary: Saffron */
+    --primary: 32 100% 56%; /* #FF9933 */
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary: Ashoka Chakra Blue */
+    --secondary: 215 85% 34%; /* #0A3D91 */
+    --secondary-foreground: 0 0% 100%;
+
+    /* Muted neutrals */
+    --muted: 36 40% 94%;
+    --muted-foreground: 214 16% 45%;
+
+    /* Accent: India Green */
+    --accent: 123 60% 38%; /* #138808 */
+    --accent-foreground: 0 0% 100%;
+
+    /* Status colours */
+    --success: 123 60% 38%; /* India green */
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 32 100% 56%; /* saffron */
+    --warning-foreground: 0 0% 100%;
+    
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders & Inputs */
+    --border: 30 24% 88%;
+    --input: 30 24% 88%;
+    --ring: 215 85% 34%; /* Ashoka blue focus */
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+/* Custom utility classes */
+@layer utilities {
+  .font-heading {
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .font-body {
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  
+  .text-success {
+    color: hsl(var(--success));
+  }
+  
+  .text-warning {
+    color: hsl(var(--warning));
+  }
+  
+  .bg-success {
+    background-color: hsl(var(--success));
+  }
+  
+  .bg-warning {
+    background-color: hsl(var(--warning));
+  }
+}
+
+@layer components {
+  .ticker-track {
+    display: inline-flex;
+    animation: ticker-slide 18s linear infinite;
+    will-change: transform;
+  }
+}
+
+@keyframes ticker-slide {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}

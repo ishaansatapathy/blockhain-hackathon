@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>TrustVault SafePay</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Inter', sans-serif;
+        min-width: 220px;
+        padding: 16px;
+        background: #faf7f0;
+        color: #1f2937;
+      }
+      h1 {
+        font-size: 16px;
+        margin: 0 0 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      button {
+        background: linear-gradient(135deg, #ff9933, #e85d04);
+        border: none;
+        color: #fff;
+        padding: 8px 14px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      button.secondary {
+        background: #e5e7eb;
+        color: #111827;
+      }
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        background: #e3fcef;
+        color: #047857;
+        padding: 4px 10px;
+        border-radius: 999px;
+        margin-bottom: 12px;
+      }
+      .status-pill.disabled {
+        background: #fee2e2;
+        color: #b91c1c;
+      }
+      ul {
+        margin: 12px 0 0;
+        padding-left: 18px;
+        font-size: 12px;
+        color: #4b5563;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🛡️ TrustVault SafePay</h1>
+    <div id="status" class="status-pill">Enabled</div>
+    <button id="toggle">Disable protection</button>
+    <button id="scan" class="secondary">Scan current tab</button>
+    <ul>
+      <li>Alerts you when suspicious payment/login pages are opened.</li>
+      <li>Blocks unsafe checkout buttons by default.</li>
+      <li>Use "Scan current tab" to re-run checks manually.</li>
+    </ul>
+    <script src="popup.js"></script>
+  </body>
+</html>
